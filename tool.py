@@ -180,6 +180,19 @@ def readFile(path):
     file.close()
     return content
 
+def normalize_unicode(data):
+    """将 JSON 中 UTF-8 形式的 UTF-16 代理对合并为正确 Unicode（常见于模板里的 emoji）。"""
+    if isinstance(data, str):
+        try:
+            return data.encode('utf-16', 'surrogatepass').decode('utf-16')
+        except UnicodeDecodeError:
+            return data
+    if isinstance(data, list):
+        return [normalize_unicode(item) for item in data]
+    if isinstance(data, dict):
+        return {normalize_unicode(k): normalize_unicode(v) for k, v in data.items()}
+    return data
+
 def noblankLine(data):
     lines = data.splitlines()
     newdata = ''

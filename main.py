@@ -37,7 +37,7 @@ def get_template():
 
 
 def load_json(path):
-    return json.loads(tool.readFile(path))
+    return tool.normalize_unicode(json.loads(tool.readFile(path)))
 
 
 def process_subscribes(subscribes):
@@ -327,7 +327,7 @@ def save_config(path, nodes):
         else:
             print(f"文件不存在，正在保存：\033[33m{path}\033[0m")
             # print(f"File không tồn tại, đang lưu tại: \033[33m{path}\033[0m")
-        tool.saveFile(path, json.dumps(nodes, indent=2, ensure_ascii=False))
+        tool.saveFile(path, json.dumps(tool.normalize_unicode(nodes), indent=2, ensure_ascii=False))
     except Exception as e:
         print(f"保存配置文件时出错：{str(e)}")
         # print(f"Lỗi khi lưu file cấu hình: {str(e)}")
@@ -343,7 +343,7 @@ def save_config(path, nodes):
             else:
                 print(f"文件不存在，正在保存：\033[33m{config_file_path}\033[0m")
                 # print(f"File không tồn tại, đang lưu tại: \033[33m{config_file_path}\033[0m")
-            tool.saveFile(config_file_path, json.dumps(nodes, indent=2, ensure_ascii=False))
+            tool.saveFile(config_file_path, json.dumps(tool.normalize_unicode(nodes), indent=2, ensure_ascii=False))
             # print(f"配置文件已保存到 {config_file_path}")
             # print(f"Tập tin cấu hình đã được lưu vào {config_file_path}")
         except Exception as e:
@@ -594,7 +594,7 @@ if __name__ == '__main__':
         # print ('Mẫu cấu hình sử dụng: \033[33m' + template_list[uip] + '.json\033[0m')
         response = requests.get(providers['config_template'])
         response.raise_for_status()
-        config = response.json()
+        config = tool.normalize_unicode(response.json())
     else:
         template_list = get_template()
         if len(template_list) < 1:
